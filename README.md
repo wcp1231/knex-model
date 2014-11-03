@@ -7,4 +7,5 @@
 
 - [ ] test
 - [ ] example
-- [ ] Relation through
+- [ ] Relation `through`
+- [ ] Realtion `hasOne`
