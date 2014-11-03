@@ -52,4 +52,4 @@ User.find('id', 1).then(function(users) {
 - [ ] test
 - [ ] example
 - [ ] Relation `through`
-- [ ] Realtion `hasOne`
+- [x] Realtion `hasOne`
