@@ -18,6 +18,8 @@ var User = Model.define('User', {
       key: 'user_id'
     }
   ]
+}, {
+  instanceMethod: function() {}
 });
 
 var Entry = Model.define('Entry', {
@@ -29,8 +31,10 @@ var Entry = Model.define('Entry', {
   }
 });
 
-User.find('id', 1).then(function(users) {
-  var user = users[0];
+User.where(...).update({...});
+User.where(...).delete();
+
+User.first('id', 1).then(function(user) {
   return user.entries.create({
     title: 'title'
   });
