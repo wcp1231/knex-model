@@ -1,6 +1,7 @@
 # knex-model
 
-......
+Small ORM.
+It is built atop the [Knex Query Builder](http://knexjs.org/)
 
 ## Example
 
