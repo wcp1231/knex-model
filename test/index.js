@@ -111,4 +111,51 @@ describe('model', function() {
       });
     });
   });
+
+  describe('instance', function() {
+    after(function(done) {
+      Promise.join(
+        knex('users').del(),
+        knex('account').del()
+      ).then(function() { done(); });
+    });
+
+    it('can be delete', function(done) {
+      User.create({ id: 1, username: 'user' }).then(function(user) {
+        user.should.respondTo('delete');
+        return user.delete();
+      }).then(function(isDelete) {
+        isDelete.should.be.ok;
+        return knex('users').select();
+      }).then(function(users) {
+        users.should.have.length(0);
+        done();
+      });
+    });
+
+    it('can be update', function(done) {
+      User.create({ id: 2, username: 'user2' }).then(function(user) {
+        user.should.respondTo('update');
+        return user.update({ username: 'updated' });
+      }).then(function(isUpdate) {
+        isUpdate.should.be.ok;
+        return knex('users').where('username', 'updated').select();
+      }).then(function(users) {
+        users.should.have.length(1);
+        done();
+      });
+    });
+
+    it('should have relation', function(done) {
+      Promise.join(
+        User.create({ id: 3, username: 'user3' }).then(function(user) {
+          user.account.should.instanceof(Relation);
+        }),
+        Account.create({ id: 3, user_id: 3 }).then(function(account) {
+          account.user.should.instanceof(Relation);
+        })
+      ).then(function() { done(); });
+    });
+  });
+
 });
