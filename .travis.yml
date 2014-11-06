@@ -1,0 +1,11 @@
+# .travis.yml
+language: node_js
+
+node_js:
+  - '0.10'
+
+before_script:
+  - ./node_modules/knex/lib/bin/cli.js migrate:latest --knexfile ./test/knexfile.js
+
+notifications:
+  email: false

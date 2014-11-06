@@ -4,7 +4,6 @@
   "description": "Small ORM",
   "main": "index.js",
   "scripts": {
-    "pretest": "cd test; knex migrate:latest",
     "test": "mocha"
   },
   "repository": {
