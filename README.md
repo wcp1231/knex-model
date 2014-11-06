@@ -31,6 +31,7 @@ var Entry = Model.define('Entry', {
   }
 });
 
+// same to knex('users').where(...).update({})
 User.where(...).update({...});
 User.where(...).delete();
 
@@ -54,7 +55,7 @@ User.first('id', 1).then(function(user) {
 
 ## TODO
 
-- [ ] test
-- [ ] example
+- [x] test
+- [x] example
 - [ ] Relation `through`
 - [x] Realtion `hasOne`
