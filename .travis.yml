@@ -7,5 +7,9 @@ node_js:
 before_script:
   - ./node_modules/knex/lib/bin/cli.js migrate:latest --knexfile ./test/knexfile.js
 
+script: "npm run-script test-travis"
+
+after_script: "npm install coveralls && cat ./coverage/lcov.info | coveralls"
+
 notifications:
   email: false

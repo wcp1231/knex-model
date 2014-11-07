@@ -4,7 +4,9 @@
   "description": "Small ORM",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "pretest": "knex migrate:latest --knexfile ./test/knexfile.js",
+    "test": "mocha",
+    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "chai": "^1.9.2",
+    "istanbul": "^0.3.2",
     "mocha": "^2.0.1",
     "sqlite3": "^3.0.2"
   }
