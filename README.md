@@ -1,4 +1,4 @@
-# knex-model
+# knex-model [![Build Status](https://travis-ci.org/wcp1231/knex-model.svg?branch=master)](https://travis-ci.org/wcp1231/knex-model) [![Coverage Status](https://coveralls.io/repos/wcp1231/knex-model/badge.png?branch=master)](https://coveralls.io/r/wcp1231/knex-model?branch=master)
 
 Small ORM.
 It is built atop the [Knex Query Builder](http://knexjs.org/)
