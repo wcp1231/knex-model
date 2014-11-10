@@ -1,4 +1,4 @@
-# knex-model [![Build Status](https://travis-ci.org/wcp1231/knex-model.svg?branch=master)](https://travis-ci.org/wcp1231/knex-model) [![Coverage Status](https://coveralls.io/repos/wcp1231/knex-model/badge.png?branch=master)](https://coveralls.io/r/wcp1231/knex-model?branch=master)
+# knex-model [![Build Status](https://travis-ci.org/wcp1231/knex-model.svg?branch=master)](https://travis-ci.org/wcp1231/knex-model) [![Coverage Status](https://coveralls.io/repos/wcp1231/knex-model/badge.png?branch=master)](https://coveralls.io/r/wcp1231/knex-model?branch=master) [![Code Climate](https://codeclimate.com/github/wcp1231/knex-model/badges/gpa.svg)](https://codeclimate.com/github/wcp1231/knex-model)
 
 Small ORM.
 It is built atop the [Knex Query Builder](http://knexjs.org/)
