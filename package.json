@@ -1,6 +1,6 @@
 {
   "name": "knex-model",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Small ORM",
   "main": "index.js",
   "scripts": {
