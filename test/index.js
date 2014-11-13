@@ -19,11 +19,23 @@ var User = Model.define('User', {
     model: 'Account',
     key: 'user_id'
   },
-  hasMany: {
-    name: 'entries',
-    model: 'Entry',
-    key: 'user_id'
-  }
+  hasMany: [
+    {
+      name: 'entries',
+      model: 'Entry',
+      key: 'user_id'
+    },
+    {
+      name: 'roles',
+      model: 'Role',
+      key: 'id',
+      through: {
+        model: 'RoleUser',
+        throughFk: 'user_id',
+        otherKey: 'role_id'
+      }
+    }
+  ]
 });
 
 var Account = Model.define('Account', {
@@ -42,6 +54,27 @@ var Entry = Model.define('Entry', {
     model: 'User',
     key: 'user_id'
   }
+});
+
+var Role = Model.define('Role', {
+  tableName: 'roles',
+  hasMany: [
+    {
+      name: 'users',
+      model: 'User',
+      key: 'id',
+      through: {
+        model: 'RoleUser',
+        throughFk: 'role_id',
+        otherKey: 'user_id'
+      }
+    }
+  ]
+});
+
+var RoleUser = Model.define('RoleUser', {
+  tableName: 'role_user',
+  belongsTo: []
 });
 
 describe('model', function() {
@@ -179,7 +212,11 @@ describe('model', function() {
         knex('users').insert({ id: 4, username: 'user' }),
         knex('account').insert({ id: 4, user_id: 4 }),
         knex('entries').insert({ id: 1, user_id: 4, title: 'test'}),
-        knex('entries').insert({ id: 2, user_id: 4, title: 'test2'})
+        knex('entries').insert({ id: 2, user_id: 4, title: 'test2'}),
+        knex('roles').insert({ id: 1, name: 'admin'}),
+        knex('roles').insert({ id: 2, name: 'staff'}),
+        knex('role_user').insert({ id: 1, user_id: 4, role_id: 1 }),
+        knex('role_user').insert({ id: 2, user_id: 4, role_id: 2 })
       ).then(function() { done(); });
     });
 
@@ -187,7 +224,9 @@ describe('model', function() {
       Promise.join(
         knex('users').del(),
         knex('account').del(),
-        knex('entries').del()
+        knex('entries').del(),
+        knex('roles').del(),
+        knex('role_user').del()
       ).then(function() { done(); });
     });
 
@@ -252,6 +291,38 @@ describe('model', function() {
       }).then(function(entries) {
         entries.should.have.length(0);
         done();
+      });
+    });
+
+    describe('through', function() {
+      it('can find models', function(done) {
+        Role().findOne('id', 1).then(function(role) {
+          return role.users.find();
+        }).then(function(users) {
+          users[0].should.instanceof(User);
+          done();
+        });
+      });
+
+      it('can findOne model', function(done) {
+        Role().findOne('id', 1).then(function(role) {
+          return role.users.findOne();
+        }).then(function(user) {
+          user.should.instanceof(User);
+          done();
+        });
+      });
+
+      it('can delete model', function(done) {
+        User().findOne('id', 4).then(function(user) {
+          return user.roles.delete({ name: 'staff' });
+        }).then(function(isDelete) {
+          isDelete.should.be.ok;
+          return Role().find();
+        }).then(function(roles) {
+          roles.should.have.length(1);
+          done();
+        });
       });
     });
   });

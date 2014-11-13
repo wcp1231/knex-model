@@ -5,7 +5,9 @@ var down = exports.down = function(knex, Promise) {
     knex.schema.dropTableIfExists('users'),
     knex.schema.dropTableIfExists('account'),
     knex.schema.dropTableIfExists('entries'),
-    knex.schema.dropTableIfExists('likes')
+    knex.schema.dropTableIfExists('likes'),
+    knex.schema.dropTableIfExists('roles'),
+    knex.schema.dropTableIfExists('role_user')
   );
 };
 
@@ -24,6 +26,23 @@ exports.up = function(knex, Promise) {
         .notNullable()
         .unsigned()
         .references('users.id');
+    }),
+
+    knex.schema.createTable('roles', function(t) {
+      t.increments('id').primary();
+      t.string('name');
+    }),
+
+    knex.schema.createTable('role_user', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id', 10)
+        .notNullable()
+        .unsigned()
+        .references('users.id');
+      t.integer('role_id', 10)
+        .notNullable()
+        .unsigned()
+        .references('roles.id');
     }),
 
     knex.schema.createTable('entries', function(t) {
