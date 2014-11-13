@@ -142,11 +142,25 @@ describe('model', function() {
       });
     });
 
+    it('find method should return empty array when find nothing', function(done) {
+      User().find('id', 999).then(function(users) {
+        users.should.have.length(0);
+        done();
+      });
+    });
+
     it('findOne method should return single instance with promise', function(done) {
       User().findOne.should.be.a('function');
       Account().findOne.should.be.a('function');
       User().findOne('id', 1).then(function(user) {
         user.should.instanceof(User);
+        done();
+      });
+    });
+
+    it('findOne method should return null when find nothing', function(done) {
+      User().findOne('id', 999).then(function(user) {
+        chai.expect(user).be.a('null');
         done();
       });
     });
