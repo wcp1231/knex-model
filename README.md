@@ -57,5 +57,5 @@ User.first('id', 1).then(function(user) {
 
 - [x] test
 - [x] example
-- [ ] Relation `through`
+- [x] Relation `through`
 - [x] Realtion `hasOne`
