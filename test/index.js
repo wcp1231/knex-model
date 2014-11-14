@@ -126,16 +126,16 @@ describe('model', function() {
     });
 
     it('create method should return instance with promise', function(done) {
-      Account().create({ id: 1, user_id: 1 }).then(function(account) {
+      Account.create({ id: 1, user_id: 1 }).then(function(account) {
         account.should.instanceof(Account);
         done();
       });
     });
 
     it('find method should return array of instance with promise', function(done) {
-      User().find.should.be.a('function');
-      Account().find.should.be.a('function');
-      User().find('id', 1).then(function(users) {
+      User.find.should.be.a('function');
+      Account.find.should.be.a('function');
+      User.find('id', 1).then(function(users) {
         users.should.be.a('array');
         users[0].should.instanceof(User);
         done();
@@ -143,32 +143,32 @@ describe('model', function() {
     });
 
     it('find method should return empty array when find nothing', function(done) {
-      User().find('id', 999).then(function(users) {
+      User.find('id', 999).then(function(users) {
         users.should.have.length(0);
         done();
       });
     });
 
     it('findOne method should return single instance with promise', function(done) {
-      User().findOne.should.be.a('function');
-      Account().findOne.should.be.a('function');
-      User().findOne('id', 1).then(function(user) {
+      User.findOne.should.be.a('function');
+      Account.findOne.should.be.a('function');
+      User.findOne('id', 1).then(function(user) {
         user.should.instanceof(User);
         done();
       });
     });
 
     it('findOne method should return null when find nothing', function(done) {
-      User().findOne('id', 999).then(function(user) {
+      User.findOne('id', 999).then(function(user) {
         chai.expect(user).be.a('null');
         done();
       });
     });
 
     it('can method chaining like knex', function() {
-      User().find().limit(10).offset(30).knex.toString()
+      User.find().limit(10).offset(30).knex.toString()
         .should.equal('select * from "users" limit 10 offset 30');
-      Entry().find().whereIn('user_id', function() {
+      Entry.find().whereIn('user_id', function() {
         this.select('id').from('users');
       }).knex.toString()
         .should.equal('select * from "entries" where "user_id" in (select "id" from "users")');
@@ -184,7 +184,7 @@ describe('model', function() {
     });
 
     it('can be delete', function(done) {
-      User().create({ id: 1, username: 'user' }).then(function(user) {
+      User.create({ id: 1, username: 'user' }).then(function(user) {
         user.should.respondTo('delete');
         return user.delete();
       }).then(function(isDelete) {
@@ -197,7 +197,7 @@ describe('model', function() {
     });
 
     it('can be update', function(done) {
-      User().create({ id: 2, username: 'user2' }).then(function(user) {
+      User.create({ id: 2, username: 'user2' }).then(function(user) {
         user.should.respondTo('update');
         return user.update({ username: 'updated' });
       }).then(function(isUpdate) {
@@ -211,10 +211,10 @@ describe('model', function() {
 
     it('should have relation', function(done) {
       Promise.join(
-        User().create({ id: 3, username: 'user3' }).then(function(user) {
+        User.create({ id: 3, username: 'user3' }).then(function(user) {
           user.account.should.instanceof(Relation);
         }),
-        Account().create({ id: 3, user_id: 3 }).then(function(account) {
+        Account.create({ id: 3, user_id: 3 }).then(function(account) {
           account.user.should.instanceof(Relation);
         })
       ).then(function() { done(); });
@@ -245,7 +245,7 @@ describe('model', function() {
     });
 
     it('belongsTo and hasOne should return single instance', function(done) {
-      User().findOne('id', 4).then(function(user) {
+      User.findOne('id', 4).then(function(user) {
         return user.account.find();
       }).then(function(account) {
         account.should.instanceof(Account);
@@ -257,7 +257,7 @@ describe('model', function() {
     });
 
     it('hasMany should return array of instance', function(done) {
-      User().findOne('id', 4).then(function(user) {
+      User.findOne('id', 4).then(function(user) {
         return user.entries.find();
       }).then(function(entries) {
         entries.should.be.a('array')
@@ -268,7 +268,7 @@ describe('model', function() {
 
     it('hasMany can create model', function(done) {
       var user = null;
-      User().findOne('id', 4).then(function(_user) {
+      User.findOne('id', 4).then(function(_user) {
         user = _user;
         return user.entries.create({ id: 3, title: 'created' });
       }).then(function(newEntry) {
@@ -283,7 +283,7 @@ describe('model', function() {
     });
 
     it('belongsTo can not create model', function(done) {
-      Entry().findOne('id', 1).then(function(entry) {
+      Entry.findOne('id', 1).then(function(entry) {
         return entry.user.create({ username: 'test' });
       }).catch(function(err) {
         err.should.instanceof(Error);
@@ -293,7 +293,7 @@ describe('model', function() {
 
     it('can delete model', function(done) {
       var user = null;
-      User().findOne('id', 4).then(function(_user) {
+      User.findOne('id', 4).then(function(_user) {
         user = _user;
         return user.entries.create({ id: 4, title: 'deleted' });
       }).then(function(created) {
@@ -310,7 +310,7 @@ describe('model', function() {
 
     describe('through', function() {
       it('can find models', function(done) {
-        Role().findOne('id', 1).then(function(role) {
+        Role.findOne('id', 1).then(function(role) {
           return role.users.find();
         }).then(function(users) {
           users[0].should.instanceof(User);
@@ -319,7 +319,7 @@ describe('model', function() {
       });
 
       it('can findOne model', function(done) {
-        Role().findOne('id', 1).then(function(role) {
+        Role.findOne('id', 1).then(function(role) {
           return role.users.findOne();
         }).then(function(user) {
           user.should.instanceof(User);
@@ -328,11 +328,11 @@ describe('model', function() {
       });
 
       it('can delete model', function(done) {
-        User().findOne('id', 4).then(function(user) {
+        User.findOne('id', 4).then(function(user) {
           return user.roles.delete({ name: 'staff' });
         }).then(function(isDelete) {
           isDelete.should.be.ok;
-          return Role().find();
+          return Role.find();
         }).then(function(roles) {
           roles.should.have.length(1);
           done();
