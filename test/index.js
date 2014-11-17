@@ -165,6 +165,14 @@ describe('model', function() {
       });
     });
 
+    it('should support map method', function(done) {
+      User.find().map(function(user) {
+        user.should.instanceof(User);
+      }).then(function() {
+        done();
+      });
+    });
+
     it('can method chaining like knex', function() {
       User.find().limit(10).offset(30).knex.toString()
         .should.equal('select * from "users" limit 10 offset 30');
