@@ -59,3 +59,5 @@ User.first('id', 1).then(function(user) {
 - [x] example
 - [x] Relation `through`
 - [x] Realtion `hasOne`
+- [ ] `onCreate` callback
+- [ ] `onUpdate` callback
