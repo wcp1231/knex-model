@@ -59,5 +59,6 @@ User.first('id', 1).then(function(user) {
 - [x] example
 - [x] Relation `through`
 - [x] Realtion `hasOne`
-- [x] `onCreate` callback
-- [x] `onUpdate` callback
+~~- [x] `onCreate` callback~~
+~~- [x] `onUpdate` callback~~
+- [ ] boardcast event
