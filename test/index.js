@@ -219,11 +219,8 @@ describe('model', function() {
       User.create({ id: 2, username: 'user2' }).then(function(user) {
         user.should.respondTo('update');
         return user.update({ username: 'updated' });
-      }).then(function(isUpdate) {
-        isUpdate.should.be.ok;
-        return knex('users').where('username', 'updated update!').select();
-      }).then(function(users) {
-        users.should.have.length(1);
+      }).then(function(user) {
+        user._meta.username.should.equal('updated update!');
         done();
       }).catch(done);
     });
