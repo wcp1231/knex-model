@@ -77,6 +77,17 @@ var RoleUser = Model.define('RoleUser', {
   belongsTo: []
 });
 
+User.register('beforeCreate', function(data) {
+  data.username += ' new!';
+});
+User.register('afterCreate', function(newId) {
+  newId = newId[0];
+  return Account.create({ user_id: newId });
+});
+User.register('beforeUpdate', function(data) {
+  data.username += ' update!';
+});
+
 describe('model', function() {
 
   describe('define', function() {
@@ -210,11 +221,11 @@ describe('model', function() {
         return user.update({ username: 'updated' });
       }).then(function(isUpdate) {
         isUpdate.should.be.ok;
-        return knex('users').where('username', 'updated').select();
+        return knex('users').where('username', 'updated update!').select();
       }).then(function(users) {
         users.should.have.length(1);
         done();
-      });
+      }).catch(done);
     });
 
     it('should have relation', function(done) {
@@ -228,6 +239,7 @@ describe('model', function() {
       ).then(function() { done(); });
     });
   });
+
   describe('relation', function() {
     before(function(done) {
       Promise.join(
@@ -346,6 +358,44 @@ describe('model', function() {
           done();
         });
       });
+    });
+  });
+
+  describe('event', function() {
+    it('should throw error when register not supported event', function() {
+      var fn = function() { User.register('notSupported'); };
+      fn.should.to.throw(Error);
+    });
+
+    it('should support beforeCreate', function(done) {
+      User.create({ username: 'new user' }).then(function(user) {
+        user._meta.username.should.equal('new user new!');
+        done();
+      });
+    });
+
+    it('should support return promise', function(done) {
+      User.create({ username: 'promise' }).then(function(user) {
+        return Account.findOne('user_id', user.id);
+      }).then(function(account) {
+        if(!account) {
+          throw new Error('event not woking');
+        }
+        done();
+      }).catch(done);
+    });
+
+    it('should support beforeUpdate', function(done) {
+      var userId = null;
+      User.create({ username: 'need update'}).then(function(user) {
+        userId = user.id;
+        return user.update({ username: 'updated' });
+      }).then(function(user) {
+        return User.findOne('id', userId);
+      }).then(function(user) {
+        user._meta.username.should.equal('updated update!');
+        done();
+      }).catch(done);
     });
   });
 });
