@@ -31,6 +31,16 @@ var Entry = Model.define('Entry', {
   }
 });
 
+User.register('beforeCreate', function(data) {
+  var datetime = new Date();
+  data.created_at = data.updated_at = data;
+});
+//  Support Promise
+User.register('afterCreate', function(newId) {
+  newId = newId[0];
+  return Entry.create({ title: 'create new user ' + newId });
+});
+
 // same to knex('users').where(...).update({})
 User.where(...).update({...});
 User.where(...).delete();
@@ -59,6 +69,10 @@ User.first('id', 1).then(function(user) {
 - [x] example
 - [x] Relation `through`
 - [x] Realtion `hasOne`
-~~- [x] `onCreate` callback~~
-~~- [x] `onUpdate` callback~~
 - [ ] boardcast event
+  - [x] `beforeCreate`
+  - [x] `afterCreate`
+  - [x] `beforeUpdate`
+  - [x] `afterCreate`
+  - [ ] `beforeFind`
+  - [ ] `afterFind`

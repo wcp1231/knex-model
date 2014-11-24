@@ -137,8 +137,8 @@ describe('model', function() {
     });
 
     it('create method should return instance with promise', function(done) {
-      Account.create({ id: 1, user_id: 1 }).then(function(account) {
-        account.should.instanceof(Account);
+      User.create({ username: 'ins' }).then(function(user) {
+        user.should.instanceof(User);
         done();
       });
     });
@@ -233,7 +233,7 @@ describe('model', function() {
         User.create({ id: 3, username: 'user3' }).then(function(user) {
           user.account.should.instanceof(Relation);
         }),
-        Account.create({ id: 3, user_id: 3 }).then(function(account) {
+        Account.create({ user_id: 3 }).then(function(account) {
           account.user.should.instanceof(Relation);
         })
       ).then(function() { done(); });
