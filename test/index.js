@@ -176,6 +176,16 @@ describe('model', function() {
       });
     });
 
+    it('update method should return updated instance with promise', function(done) {
+      User.create({ username: 'new' }).then(function(user) {
+        return User.update({ username: 'updated' }).where('id', user.id);
+      }).then(function(user) {
+        user._meta.username.should.equal('updated update!');
+        done();
+      });
+    });
+
+
     it('should support map method', function(done) {
       User.find().map(function(user) {
         user.should.instanceof(User);
