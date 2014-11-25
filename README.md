@@ -76,3 +76,4 @@ User.first('id', 1).then(function(user) {
   - [x] `afterCreate`
   - [ ] `beforeFind`
   - [ ] `afterFind`
+  - [ ] `afterFindOne`
