@@ -335,6 +335,19 @@ describe('model', function() {
       });
     });
 
+    it('hasOne can update model', function(done) {
+      var userId = null;
+      User.findOne('id', 4).then(function(user) {
+        userId = user.id;
+        return user.account.update({ bio: 'update' });
+      }).then(function() {
+        return knex('account').where({ user_id: userId, bio: 'update' });
+      }).then(function(rows) {
+        rows.should.have.length(1);
+        done();
+      }).catch(done);
+    });
+
     describe('through', function() {
       it('can find models', function(done) {
         Role.findOne('id', 1).then(function(role) {

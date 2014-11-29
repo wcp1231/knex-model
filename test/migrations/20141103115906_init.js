@@ -26,6 +26,7 @@ exports.up = function(knex, Promise) {
         .notNullable()
         .unsigned()
         .references('users.id');
+      t.string('bio');
     }),
 
     knex.schema.createTable('roles', function(t) {
