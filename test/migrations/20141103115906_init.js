@@ -17,7 +17,10 @@ exports.up = function(knex, Promise) {
 
     knex.schema.createTable('users', function(t) {
       t.increments('id').primary();
-      t.string('username').notNullable();
+      t.string('username')
+        .notNullable()
+        .unique();
+      t.timestamp('updated_at');
     }),
 
     knex.schema.createTable('account', function(t) {

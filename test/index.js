@@ -85,7 +85,7 @@ User.register('afterCreate', function(newId) {
   return Account.create({ user_id: newId });
 });
 User.register('beforeUpdate', function(data) {
-  data.username += ' update!';
+  data.updated_at = Date();
 });
 
 describe('model', function() {
@@ -178,11 +178,11 @@ describe('model', function() {
 
     it('update method should return updated instance with promise', function(done) {
       User.create({ username: 'new' }).then(function(user) {
-        return User.update({ username: 'updated' }).where('id', user.id);
+        return User.update({ username: 'updated!' }).where('id', user.id);
       }).then(function(user) {
-        user._meta.username.should.equal('updated update!');
+        user._meta.username.should.equal('updated!');
         done();
-      });
+      }).catch(done);
     });
 
 
@@ -213,7 +213,7 @@ describe('model', function() {
     });
 
     it('can be delete', function(done) {
-      User.create({ id: 1, username: 'user' }).then(function(user) {
+      User.create({ id: 2, username: 'user' }).then(function(user) {
         user.should.respondTo('delete');
         return user.delete();
       }).then(function(isDelete) {
@@ -226,18 +226,18 @@ describe('model', function() {
     });
 
     it('can be update', function(done) {
-      User.create({ id: 2, username: 'user2' }).then(function(user) {
+      User.create({ id: 3, username: 'user2' }).then(function(user) {
         user.should.respondTo('update');
-        return user.update({ username: 'updated' });
+        return user.update({ username: 'updated!' });
       }).then(function(user) {
-        user._meta.username.should.equal('updated update!');
+        user._meta.username.should.equal('updated!');
         done();
       }).catch(done);
     });
 
     it('should have relation', function(done) {
       Promise.join(
-        User.create({ id: 3, username: 'user3' }).then(function(user) {
+        User.create({ id: 5, username: 'user3' }).then(function(user) {
           user.account.should.instanceof(Relation);
         }),
         Account.create({ user_id: 3 }).then(function(account) {
@@ -250,14 +250,14 @@ describe('model', function() {
   describe('relation', function() {
     before(function(done) {
       Promise.join(
-        knex('users').insert({ id: 4, username: 'user' }),
-        knex('account').insert({ id: 4, user_id: 4 }),
-        knex('entries').insert({ id: 1, user_id: 4, title: 'test'}),
-        knex('entries').insert({ id: 2, user_id: 4, title: 'test2'}),
+        knex('users').insert({ id: 40, username: 'user' }),
+        knex('account').insert({ id: 40, user_id: 40 }),
+        knex('entries').insert({ id: 1, user_id: 40, title: 'test'}),
+        knex('entries').insert({ id: 2, user_id: 40, title: 'test2'}),
         knex('roles').insert({ id: 1, name: 'admin'}),
         knex('roles').insert({ id: 2, name: 'staff'}),
-        knex('role_user').insert({ id: 1, user_id: 4, role_id: 1 }),
-        knex('role_user').insert({ id: 2, user_id: 4, role_id: 2 })
+        knex('role_user').insert({ id: 1, user_id: 40, role_id: 1 }),
+        knex('role_user').insert({ id: 2, user_id: 40, role_id: 2 })
       ).then(function() { done(); });
     });
 
@@ -272,7 +272,7 @@ describe('model', function() {
     });
 
     it('belongsTo and hasOne should return single instance', function(done) {
-      User.findOne('id', 4).then(function(user) {
+      User.findOne('id', 40).then(function(user) {
         return user.account.find();
       }).then(function(account) {
         account.should.instanceof(Account);
@@ -284,7 +284,7 @@ describe('model', function() {
     });
 
     it('hasMany should return array of instance', function(done) {
-      User.findOne('id', 4).then(function(user) {
+      User.findOne('id', 40).then(function(user) {
         return user.entries.find();
       }).then(function(entries) {
         entries.should.be.a('array')
@@ -295,18 +295,18 @@ describe('model', function() {
 
     it('hasMany can create model', function(done) {
       var user = null;
-      User.findOne('id', 4).then(function(_user) {
+      User.findOne('id', 40).then(function(_user) {
         user = _user;
         return user.entries.create({ id: 3, title: 'created' });
       }).then(function(newEntry) {
         newEntry.should.instanceof(Entry);
-        newEntry._meta.user_id.should.equal(4);
+        newEntry._meta.user_id.should.equal(40);
         return user.entries.find({ id: 3 });
       }).then(function(entries) {
         entries.should.have.length(1);
         entries[0]._meta.title.should.equal('created');
         done();
-      });
+      }).catch(done);
     });
 
     it('belongsTo can not create model', function(done) {
@@ -320,7 +320,7 @@ describe('model', function() {
 
     it('can delete model', function(done) {
       var user = null;
-      User.findOne('id', 4).then(function(_user) {
+      User.findOne('id', 40).then(function(_user) {
         user = _user;
         return user.entries.create({ id: 4, title: 'deleted' });
       }).then(function(created) {
@@ -337,7 +337,7 @@ describe('model', function() {
 
     it('hasOne can update model', function(done) {
       var userId = null;
-      User.findOne('id', 4).then(function(user) {
+      User.findOne('id', 40).then(function(user) {
         userId = user.id;
         return user.account.update({ bio: 'update' });
       }).then(function() {
@@ -368,7 +368,7 @@ describe('model', function() {
       });
 
       it('can delete model', function(done) {
-        User.findOne('id', 4).then(function(user) {
+        User.findOne('id', 40).then(function(user) {
           return user.roles.delete({ name: 'staff' });
         }).then(function(isDelete) {
           isDelete.should.be.ok;
@@ -413,7 +413,7 @@ describe('model', function() {
       }).then(function(user) {
         return User.findOne('id', userId);
       }).then(function(user) {
-        user._meta.username.should.equal('updated update!');
+        user._meta.updated_at.should.not.be.null;
         done();
       }).catch(done);
     });
