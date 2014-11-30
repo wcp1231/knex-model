@@ -88,7 +88,23 @@ User.register('beforeUpdate', function(data) {
   data.updated_at = Date();
 });
 
-describe('model', function() {
+describe('Knex-Model', function() {
+
+  it('can catch Error in promise chain', function(done) {
+    var id = null;
+    Promise.join(
+      User.create({ id: 10, username: 'error1' }),
+      User.create({ id: 11, username: 'error2'})
+    ).then(function(result) {
+      id = result[0].id;
+      return result[0].update({ username: result[1]._meta.username });
+    }).then(function(user) {
+      done('should throw error');
+    }).catch(function(err) {
+      err.message.should.equal('SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username');
+      done();
+    });
+  });
 
   describe('define', function() {
     it('should has name', function() {
